@@ -1,7 +1,7 @@
 CREATE SCHEMA Integrador;
 use integrador;
 -- Fin creacion base de datos
-
+drop table usuarios;
 CREATE TABLE usuarios (
 id INT auto_increment PRIMARY KEY,
 email varchar(255),
@@ -9,11 +9,12 @@ nickname varchar(50),
 password varchar(500),
 rol varchar(50)
 );
+drop table alumnos;
 CREATE TABLE alumnos (
 id INT auto_increment PRIMARY KEY,
-nombre varchar(255),
-apellido varchar(255),
-dni varchar(10),
+nombre  varchar(255),
+apellido  varchar(255),
+dni varchar(10) UNIQUE,
 id_usuario INT,
 FOREIGN KEY (id_usuario) references usuarios(id)
 );
@@ -25,11 +26,12 @@ imagen varchar(1000),
 año INT,
 activo BOOLEAN
 );
+drop table alumno_curso;
 CREATE TABLE alumno_curso(
 id_alumno INT,
 id_curso INT,
-FOREIGN KEY (id_alumno)references alumnos(id),
-FOREIGN KEY (id_curso)references cursos(id)
+FOREIGN KEY (id_curso) references cursos(id),
+FOREIGN KEY (id_alumno) references alumnos(id)
 );
 -- Fin creacion de tablas
 
@@ -41,7 +43,7 @@ INSERT INTO alumnos (nombre,apellido,dni,id_usuario)VALUES
 INSERT INTO cursos (nombre,descripcion,imagen,año,activo)VALUES
 ('Javascript','descripciondelcursoJAVASCRIPT','url','2023','1');
 INSERT INTO alumno_curso (id_alumno,id_curso)VALUES
-('1','1');
+(1,1);
 
 SELECT * FROM usuarios;
 SELECT * FROM alumnos;

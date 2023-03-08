@@ -1,9 +1,16 @@
 const express = require('express');
 const app = express();
 const alumnosDB = require('../datasource/alumnoDB');
+const security = require('../security/security');
 
 app.get("/" , getAll);
-app.post("/:id", eliminar);
+app.get("/:id",getByID)
+app.delete("/:id",security.verifyToken, eliminar);
+app.put("/", createAlumn)
+app.post("/:id", modify)
+
+
+
 
 
 function getAll(req,res){
@@ -15,8 +22,8 @@ function getAll(req,res){
         }
     })
 }
-function eliminar(req,res){
-    alumnosDB.delete(req.params,(err,result)=>{
+function getByID(req,res){
+    alumnosDB.getById(req.params.id,(err,result)=>{
         if(err){
             res.status(500).send(err);
         }else{
@@ -24,7 +31,33 @@ function eliminar(req,res){
         }
     })
 }
-
+function eliminar(req,res){
+    alumnosDB.delete(req.params.id,(err,result)=>{
+        if(err){
+            res.status(500).send(err);
+        }else{
+            res.json(result);
+        }
+    })
+}
+function createAlumn(req,res){
+    alumnosDB.create(req.body,(err,result)=>{
+        if(err){
+            res.status(500).send(err);
+        }else{
+            res.json(result);
+        }  
+    })
+}
+function modify(req,res){
+    alumnosDB.modify(req.body,req.params.id,(err,result)=>{
+        if(err){
+            res.status(500).send(err);
+        }else{
+            res.json(result);
+        } 
+    })
+}
 module.exports = app;
 
 

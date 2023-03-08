@@ -4,14 +4,10 @@ const sqlConnection = require('../config/dbConnection');
 
 alumnosDB = {};
 
-//Funcionalidades para alumnos
-
 alumnosDB.getAll = function(funCallback){
     let order = 'ASC';
-    sqlConnection.query(`SELECT a.id AS id_alumno, concat_ws(' ',a.nombre, a.apellido) AS alumno, a.dni, c.nombre AS curso FROM alumno_curso AS a_c 
-    INNER JOIN alumnos AS a ON a_c.id_alumno = a.id 
-    INNER JOIN cursos AS c ON a_c.id_curso = c.id
-    ORDER BY a.nombre ${order};`,(err,result)=>{
+    sqlConnection.query(`SELECT a.id, a.nombre, a.apellido, a.dni, a.id_usuario FROM alumnos AS a 
+    ORDER BY a.id ${order};`,(err,result)=>{
         if(err){
             funCallback({
                 message: "Surgio un problema, contactese con un administrador. Gracias",
@@ -22,10 +18,9 @@ alumnosDB.getAll = function(funCallback){
         }
     });
 }
-
-alumnosDB.delete = function(id,funCallback){
-    let query = `UPDATE alumnos SET nombre = 'pepito' AND apellido = 'galizzi' WHERE id = ${id}`;
-    sqlConnection.query(query, (err,result)=>{
+alumnosDB.getById = function(id, funCallback){
+    sqlConnection.query(`SELECT a.id, a.nombre, a.apellido, a.dni, a.id_usuario FROM alumnos AS a 
+    ORDER BY a.id ASC WHERE a.id = ${id};`,(err,result)=>{
         if(err){
             funCallback({
                 message: "Surgio un problema, contactese con un administrador. Gracias",
@@ -34,9 +29,57 @@ alumnosDB.delete = function(id,funCallback){
         }else{
             funCallback(undefined,result);
         }
+    });
+}
+alumnosDB.delete = function(id,funCallback){
+    let query = `DELETE FROM alumnos WHERE id = ${id}`;
+    sqlConnection.query(query, (err,result)=>{
+        if(err){
+            funCallback({
+                message: "Surgio un problema, contactese con un administrador. Gracias",
+                detail: console.log(err)
+            })
+        }else{
+            funCallback(undefined,{
+                message: `Se ha eliminado con exito el alumno id = ${id}`,
+                details: result
+            });
+        }
     })
 }
+alumnosDB.create = function(alumno,funCallback){
+    let query = `INSERT INTO alumnos (nombre,apellido,dni,id_usuario)VALUES('${alumno.nombre}','${alumno.apellido}','${alumno.dni}','${alumno.id_usuario}');`;
+    sqlConnection.query(query,(err,result)=>{
+        if(err){
+            funCallback({
+                message: "Surgio un problema, contactese con un administrador. Gracias",
+                detail: console.log(err)
+            })
+        }else{
+            funCallback(undefined,{
+                message: `Se ha creado con exito el alumno ${alumno.nombre }${alumno.apellido} `,
+                details: result
+            });
+        }
+    })
+}
+alumnosDB.modify = function(alumno,id,funCallback){
 
+    let query = `UPDATE alumnos SET nombre = '${alumno.nombre}' , apellido = '${alumno.apellido}',dni = '${alumno.dni}',id_usuario = ${alumno.id_usuario} WHERE id = ${id}; `
+    sqlConnection.query(query, (err,result)=>{
+        if(err){
+            funCallback({
+                message: "Surgio un problema, contactese con un administrador. Gracias",
+                detail: console.log(err)
+            })
+        }else{
+            funCallback(undefined,{
+                message: `Se ha modificado con exito el alumno de id ${id}`,
+                details: result
+            });
+        }
+    })
+}
 
 
 
