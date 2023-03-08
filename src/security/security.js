@@ -15,19 +15,19 @@ function login(req, res) {
     userDB.findByNickname(req.body, (err, result) => {
         if (err) {
             res.sendStatus(403).json({
-                message: "El nickname y/o email y/o contraseña ingresados son incorrectos.",
-                details: err
+                message: console.log(err)
             })
-        } else {
+        } else if(result.length != 0){
             let { password } = req.body;
-            let verifiedPassword = bcrypt.compareSync(password, result.password);
+            let verifiedPassword = bcrypt.compareSync(password, result[0].password);
             if (verifiedPassword) {
                 const user = {
-                    nickname: result.nickname,
-                    password: result.password
+                    nickname: result[0].nickname,
+                    password: result[0].password,
+                    rol: result[0].rol
                 }
 
-                jwt.sign(user, 'secretKey', { expiresIn: '30s' }, (err, token) => {
+                jwt.sign(user, 'secretKey', { expiresIn: '1m' }, (err, token) => {
                     if (err) {
                         res.sendStatus(403).send(err)
                     } else {

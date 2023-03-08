@@ -8,15 +8,16 @@ const userDB = {}
 
 
 userDB.findByNickname = (user,funCallback)=>{
-    let query = `SELECT * FROM usuarios WHERE nickname = '${user.nickname} ' OR email = '${user.email}';`
+    let query = `SELECT * FROM usuarios WHERE nickname = '${user.nickname}' ;`
     sqlConnection.query(query, (err,result)=>{
         if(err){
             funCallback({
-                message: "El usuario y/o email ingresado son incorrectos",
                 details: err
             })
         }else{
-            funCallback(undefined,result[0])
+            funCallback(undefined,
+                result
+             )
         }
     })
 }
@@ -33,7 +34,8 @@ userDB.createUser = (user, funCallback)=>{
             })
         }else{
             funCallback(undefined,{
-                    message: `Usuario ${user.nickname} creado con exito`
+                    message: `Usuario ${user.nickname} creado con exito`,
+                    result
                 })
         }
     })

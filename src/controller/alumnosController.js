@@ -4,10 +4,10 @@ const alumnosDB = require('../datasource/alumnoDB');
 const security = require('../security/security');
 
 app.get("/" , getAll);
-app.get("/:id",getByID)
+app.get("/:id",security.verifyToken,getByID)
 app.delete("/:id",security.verifyToken, eliminar);
-app.put("/", createAlumn)
-app.post("/:id", modify)
+app.put("/",security.verifyToken, createAlumn)
+app.post("/:id",security.verifyToken, modify)
 
 
 

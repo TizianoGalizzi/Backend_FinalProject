@@ -56,3 +56,5 @@ INNER JOIN alumnos AS a ON a_c.id_alumno = a.id
 INNER JOIN cursos AS c ON a_c.id_curso = c.id
 ORDER BY a.nombre ASC;
 -- Alumnos - delete:
+
+SELECT * FROM usuarios WHERE nickname = 'Teasy213'

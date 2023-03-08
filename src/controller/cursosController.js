@@ -5,8 +5,8 @@ const security = require('../security/security');
 
 app.get("/" ,  getAll);
 app.delete("/:id",security.verifyToken,  eliminateCourse);
-app.put("/", createCourse)
-app.post("/:id", modify)
+app.put("/",security.verifyToken, createCourse)
+app.post("/:id",security.verifyToken, modify)
 app.put("/inscripcionAlumnos/:id",security.verifyToken, signAlumns)
 app.get("/:id",security.verifyToken,  listByID)
 
