@@ -7,10 +7,9 @@ app.get("/" ,  getAll);
 app.delete("/:id",security.verifyToken,  eliminateCourse);
 app.put("/",security.verifyToken, createCourse)
 app.post("/:id",security.verifyToken, modify)
-app.put("/inscripcionAlumnos/:id",security.verifyToken, signAlumns)
-app.get("/:id",security.verifyToken,  listByID)
-
-
+app.get("/inscAlumno/:id",security.verifyToken,  listByID)
+app.put("/inscAlumno/:id",security.verifyToken, signAlumns)
+app.delete("/inscAlumno/:id",security.verifyToken, dropAlumns )
 
 
 
@@ -50,8 +49,8 @@ function modify(req,res){
         } 
     })
 }
-function signAlumns(req,res){
-    cursosDB.inscAlumn(req.params.id,req.body,(err,result)=>{
+function listByID(req,res){
+    cursosDB.listID(req.params.id, (err,result)=>{
         if(err){
             res.status(500).send(err);
         }else{
@@ -59,8 +58,17 @@ function signAlumns(req,res){
         } 
     })
 }
-function listByID(req,res){
-    cursosDB.listID(req.params.id, (err,result)=>{
+function signAlumns(req,res){
+    cursosDB.inscAlumn(req.body,req.params.id,(err,result)=>{
+        if(err){
+            res.status(500).send(err);
+        }else{
+            res.json(result);
+        } 
+    })
+}
+function dropAlumns(req,res){
+    cursosDB.dropAlumn(req.body,req.params.id,(err,result)=>{
         if(err){
             res.status(500).send(err);
         }else{

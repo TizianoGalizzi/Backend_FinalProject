@@ -1,15 +1,13 @@
 CREATE SCHEMA Integrador;
 use integrador;
 -- Fin creacion base de datos
-drop table usuarios;
 CREATE TABLE usuarios (
 id INT auto_increment PRIMARY KEY,
-email varchar(255),
-nickname varchar(50),
+email varchar(255) UNIQUE,
+nickname varchar(50) UNIQUE,
 password varchar(500),
 rol varchar(50)
 );
-drop table alumnos;
 CREATE TABLE alumnos (
 id INT auto_increment PRIMARY KEY,
 nombre  varchar(255),
@@ -26,7 +24,6 @@ imagen varchar(1000),
 año INT,
 activo BOOLEAN
 );
-drop table alumno_curso;
 CREATE TABLE alumno_curso(
 id_alumno INT,
 id_curso INT,
@@ -43,18 +40,24 @@ INSERT INTO alumnos (nombre,apellido,dni,id_usuario)VALUES
 INSERT INTO cursos (nombre,descripcion,imagen,año,activo)VALUES
 ('Javascript','descripciondelcursoJAVASCRIPT','url','2023','1');
 INSERT INTO alumno_curso (id_alumno,id_curso)VALUES
-(1,1);
+(5,2);
 
+
+DROP TABLE usuarios;
+DROP TABLE alumnos;
+DROP TABLE cursos;
+DROP TABLE alumno_curso;
 SELECT * FROM usuarios;
 SELECT * FROM alumnos;
 SELECT * FROM cursos;
 SELECT * FROM alumno_curso;
 
+
 -- Alumnos - getAll (nombre de alumno, dni y curso al que esta inscripto):
 SELECT a.id AS id_alumno, concat_ws(' ',a.nombre, a.apellido) AS alumno, a.dni, c.nombre AS curso FROM alumno_curso AS a_c 
 INNER JOIN alumnos AS a ON a_c.id_alumno = a.id 
 INNER JOIN cursos AS c ON a_c.id_curso = c.id
-ORDER BY a.nombre ASC;
+WHERE id_curso = 5 ORDER BY a.id ASC ;
 -- Alumnos - delete:
-
-SELECT * FROM usuarios WHERE nickname = 'Teasy213'
+SELECT * FROM usuarios WHERE nickname = 'admi';
+DELETE FROM alumno_curso WHERE id_alumno = 4 AND id_curso = 5;

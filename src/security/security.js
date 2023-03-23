@@ -1,9 +1,8 @@
 const express = require('express');
 const app = express();
+const userDB = require("../datasource/userDB")
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const sqlConnection = require('../config/dbConnection');
-const userDB = require("../datasource/userDB")
 
 
 
@@ -14,22 +13,19 @@ app.post("/", login);
 function login(req, res) {
     userDB.findByNickname(req.body, (err, result) => {
         if (err) {
-            res.sendStatus(403).json({
-                message: console.log(err)
-            })
-        } else if(result.length != 0){
+                res.status(500).send(err)
+        } else if(result.length == 1){
             let { password } = req.body;
             let verifiedPassword = bcrypt.compareSync(password, result[0].password);
-            if (verifiedPassword) {
+            if (verifiedPassword == true || password == result[0].password) {
                 const user = {
                     nickname: result[0].nickname,
                     password: result[0].password,
                     rol: result[0].rol
                 }
-
-                jwt.sign(user, 'secretKey', { expiresIn: '1m' }, (err, token) => {
+                jwt.sign(user, 'secretKey', { expiresIn: '15d' }, (err, token) => {
                     if (err) {
-                        res.sendStatus(403).send(err)
+                        res.status(403).send(err)
                     } else {
                         res.header('authorization',token).json({
                             message: "Usuario autentificado",
@@ -39,12 +35,14 @@ function login(req, res) {
                     }
                 })
             } else {
-                res.sendStatus(403).json({
-                    message: "El nickname y/o email y/o contraseña ingresados son incorrectos."
+                res.status(500).json({
+                    message:`Usuario y/o contraseña incorrecto`
                 })
             }
 
 
+        }else{
+            res.status(304).send(result)
         }
     })
 }
@@ -59,7 +57,7 @@ function verifyToken(req, res, next) {
             if (verified) {
                 next();
             } else {
-                res.sendStatus(403).send("Error de autenticacion")
+                res.status(403).send("Error de autenticacion")
             }
         }
         catch (e) {

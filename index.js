@@ -21,7 +21,8 @@ const register = require('./src/security/register')
 app.use("/register", register)
 const security = require('./src/security/security');
 app.use("/login",security.app);
-
+// const userController = require('./src/controller/usersController');
+// app.use("/users", userController )
 
 // const cursosController = require('./src/controller/cursosController')
 // app.use("/cursos",cursosController);
